@@ -18,17 +18,24 @@ center_y = bd_height/2
 clr = "black"       #背景の色
 tclr = 'green'       #テキストの色
 prime_cnt = 50
-diction = {
-#"mind" : None
-            }
+dict = {
+    "mind":None,
+    "net":None,
+    "IT":None,
+    "udagawa":None
+    }
 
 class mind():
 
     #コンストラクタ
     def __init__(self,panel,text):
-        text_obj = wx.StaticText(panel, wx.ID_ANY, text,pos = (100,100))
-        text_obj.SetForegroundColour(tclr)
-        text_obj.Bind(wx.EVT_LEFT_DOWN, self.click)
+        print(dict)
+        dict_len = len(dict_list)
+        for i in range(dict_len):
+            text_obj = wx.StaticText(panel, wx.ID_ANY, dict_list[i],pos = (100,25+i*25))
+            text_obj.SetForegroundColour(tclr)
+            text_obj.Bind(wx.EVT_LEFT_DOWN, self.click)
+
         #layout.Add(text_obj, proportion=0, flag=wx.TOP,  border=10)
 
     def click(self, event):
@@ -55,7 +62,7 @@ class Main():
 
         # StaticTextを3つ作る
         mind(panel,"text1")
-        mind(panel,"text2")
+        #mind(panel,"text2")
         #v_layout.Add(self.result_text, proportion=0, flag=wx.TOP,  border=10)
 
         panel.SetSizer(v_layout)
