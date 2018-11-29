@@ -30,6 +30,7 @@ class mind():
     #コンストラクタ
     def __init__(self,panel,text):
         print(dict)
+        dict_list = list(dict.keys())
         dict_len = len(dict_list)
         for i in range(dict_len):
             text_obj = wx.StaticText(panel, wx.ID_ANY, dict_list[i],pos = (100,25+i*25))
