@@ -3,6 +3,9 @@ Created on 2018/08/11
 refer to URL
 https://torina.top/detail/43/
 https://wxpython.org/Phoenix/docs/html/wx.MouseEvent.html?highlight=dclick#wx.MouseEvent.Aux1DClick
+http://wxwindowsjp.osdn.jp/docs/html/wx/wx411.htm
+http://maku77.github.io/python/wxpython/textctrl.html
+http://wxwindowsjp.osdn.jp/docs/html/wx/wx381.htm
 @author: atomic
 '''
 
@@ -51,12 +54,23 @@ class mind():
         print(ret_text)
 
     def double_click(self, event):
-        click = event.GetEventObject()  # クリックされたのはどのオブジェクトか
-        click_text = click.GetLabel()  # そのオブジェクトのラベルを取得
+        self.click = event.GetEventObject()  # クリックされたのはどのオブジェクトか
+        click_text = self.click.GetLabel()  # そのオブジェクトのラベルを取得
         ret_text = click_text
         print(ret_text)
-        textbox2 = wx.TextCtrl(self.panel, -1, click_text, pos=(10,40))
+        self.textbox = wx.TextCtrl(self.panel, -1, click_text, pos = self.click.GetPosition(),style=wx.TE_PROCESS_ENTER )
+        #self.textbox.Bind(wx.EVT_TEXT, self.OnText)
+        self.textbox.Bind(wx.EVT_TEXT_ENTER, self.OnText)
+        #self.Fit()
 
+    def OnText(self, event):
+        #self.Fit()
+        input_text =self.textbox.GetValue()
+        self.textbox.Destroy()
+        #self.textbox.Close(force=True)
+        #self.textbox.Clear()
+        print(input_text)
+        self.click.SetLabel(input_text)
 
 #class Main(wx.Frame):
 class Main():
