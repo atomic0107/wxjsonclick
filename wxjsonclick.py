@@ -59,6 +59,8 @@ class mind():
         # It's a special key, deal with all the known ones:
         if keycode == wx.WXK_F1:
             # give help ...
+            print("F1")
+            dict.setdefault("")
             GiveHelp()
 
     def click(self, event):
