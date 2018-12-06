@@ -6,6 +6,7 @@ https://wxpython.org/Phoenix/docs/html/wx.MouseEvent.html?highlight=dclick#wx.Mo
 http://wxwindowsjp.osdn.jp/docs/html/wx/wx411.htm
 http://maku77.github.io/python/wxpython/textctrl.html
 http://wxwindowsjp.osdn.jp/docs/html/wx/wx381.htm
+https://wxpython.org/Phoenix/docs/html/wx.KeyEvent.html
 @author: atomic
 '''
 
@@ -45,8 +46,23 @@ class mind():
             text_obj.Bind(wx.EVT_LEFT_DOWN, self.click)
             text_obj.Bind(wx.EVT_LEFT_DCLICK, self.double_click)
         #layout.Add(text_obj, proportion=0, flag=wx.TOP,  border=10)
+        self.panel.Bind(wx.EVT_LEFT_DOWN, self.click_panel)
+
+    def click_panel(self,event):
+        self.textbox.Destroy()
+        self.panel.Bind(wx.EVT_CHAR_HOOK, self.key_event)
+
+    def key_event(self,event):
+        keycode = event.GetUnicodeKey()
+        print(keycode)
+
+        # It's a special key, deal with all the known ones:
+        if keycode == wx.WXK_F1:
+            # give help ...
+            GiveHelp()
 
     def click(self, event):
+        self.textbox.Destroy()
         click = event.GetEventObject()  # クリックされたのはどのオブジェクトか
         click_text = click.GetLabel()  # そのオブジェクトのラベルを取得
         #self.result_text.SetLabel(click_text)  # 結果表示欄にクリックされたテキストを貼り付け
