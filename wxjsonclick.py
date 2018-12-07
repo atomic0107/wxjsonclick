@@ -7,6 +7,7 @@ http://wxwindowsjp.osdn.jp/docs/html/wx/wx411.htm
 http://maku77.github.io/python/wxpython/textctrl.html
 http://wxwindowsjp.osdn.jp/docs/html/wx/wx381.htm
 https://wxpython.org/Phoenix/docs/html/wx.KeyEvent.html
+https://www.blog.pythonlibrary.org/2009/08/29/wxpython-catching-key-and-char-events/
 @author: atomic
 '''
 
@@ -36,35 +37,60 @@ class mind():
 
     #コンストラクタ
     def __init__(self,panel,text):
+        self.x = center_x
+        #self.y = center_y
         self.panel = panel
+        self.panel.Bind(wx.EVT_LEFT_DOWN, self.click_panel)
         print(dict)
         dict_list = list(dict.keys())
         dict_len = len(dict_list)
         for i in range(dict_len):
-            text_obj = wx.StaticText(panel, wx.ID_ANY, dict_list[i],pos = (center_x,center_y+i*25))
+            self.y =center_y+i*25
+            text_obj = wx.StaticText(panel, wx.ID_ANY, dict_list[i],pos = (self.x,self.y))
             text_obj.SetForegroundColour(tclr)
             text_obj.Bind(wx.EVT_LEFT_DOWN, self.click)
             text_obj.Bind(wx.EVT_LEFT_DCLICK, self.double_click)
         #layout.Add(text_obj, proportion=0, flag=wx.TOP,  border=10)
-        self.panel.Bind(wx.EVT_LEFT_DOWN, self.click_panel)
+
 
     def click_panel(self,event):
         self.textbox.Destroy()
-        self.panel.Bind(wx.EVT_CHAR_HOOK, self.key_event)
+        #self.panel.Bind(wx.EVT_CHAR_HOOK, self.key_event)
+        #self.panel.Bind(wx.EVT_KEY_DOWN, self.key_event)
+        self.panel.Bind(wx.EVT_CHAR, self.key_event)
 
     def key_event(self,event):
-        keycode = event.GetUnicodeKey()
-        print(keycode)
-
+        #self.keycode = event.GetUnicodeKey()
+        self.keycode = event.GetKeyCode()
+        #print(keycode)
         # It's a special key, deal with all the known ones:
-        if keycode == wx.WXK_F1:
+        #self.keycode.Destroy()
+        #self.keycode.GetSkipped()
+        #event.GetSkipped()
+        #self.text_input()
+        print("press key")
+        print(self.keycode)
+        event.GetSkipped()
+        self.texttabbox = wx.TextCtrl(self.panel, -1, pos = (self.x,self.y+25),style=wx.TE_PROCESS_ENTER )
+        self.texttabbox.Bind(wx.EVT_TEXT_ENTER, self.OnText)
+
+        if self.keycode == wx.WXK_TAB:
             # give help ...
-            print("F1")
-            dict.setdefault("")
-            GiveHelp()
+            #event.Skip()
+            #self.keycode.GetSkipped()
+            #event.GetSkipped()
+            print("tab")
+            #self.text_input()
+            #self.keycode.Destroy()
+            #event.Skip()
+
+    #def text_input(self):
+    #    print("TAB")
+    #    self.texttabbox = wx.TextCtrl(self.panel, -1, pos = (self.x,self.y+25),style=wx.TE_PROCESS_ENTER )
+    #    self.texttabbox.Bind(wx.EVT_TEXT_ENTER, self.OnText)
 
     def click(self, event):
-        self.textbox.Destroy()
+        #self.textbox.Destroy()
         click = event.GetEventObject()  # クリックされたのはどのオブジェクトか
         click_text = click.GetLabel()  # そのオブジェクトのラベルを取得
         #self.result_text.SetLabel(click_text)  # 結果表示欄にクリックされたテキストを貼り付け
