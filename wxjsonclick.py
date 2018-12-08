@@ -46,7 +46,7 @@ class mind():
         dict_len = len(dict_list)
         for i in range(dict_len):
             self.y =center_y+i*25
-            text_obj = wx.StaticText(panel, wx.ID_ANY, dict_list[i],pos = (self.x,self.y))
+            text_obj = wx.StaticText(self.panel, wx.ID_ANY, dict_list[i],pos = (self.x,self.y))
             text_obj.SetForegroundColour(tclr)
             text_obj.Bind(wx.EVT_LEFT_DOWN, self.click)
             text_obj.Bind(wx.EVT_LEFT_DCLICK, self.double_click)
@@ -71,19 +71,25 @@ class mind():
         print("press key")
         print(self.keycode)
         event.GetSkipped()
-        self.texttabbox = wx.TextCtrl(self.panel, -1, pos = (self.x,self.y+25),style=wx.TE_PROCESS_ENTER )
-        self.texttabbox.Bind(wx.EVT_TEXT_ENTER, self.OnText)
-
         if self.keycode == wx.WXK_TAB:
             # give help ...
             #event.Skip()
             #self.keycode.GetSkipped()
             #event.GetSkipped()
             print("tab")
+            self.texttabbox = wx.TextCtrl(self.panel, -1, pos = (self.x,self.y+25),style=wx.TE_PROCESS_ENTER )
+            #self.texttabbox.Bind(wx.EVT_TEXT_ENTER, self.OnText)
+            input_text =self.texttabbox.GetValue()
+            self.texttabbox.Destroy()
+            print(input_text)
+            #text_obj = wx.StaticText(self.panel, wx.ID_ANY, input_text, pos = (self.x,self.y+25))
+            #text_obj.SetForegroundColour(tclr)
+            #text_obj.Bind(wx.EVT_LEFT_DOWN, self.click)
+            #text_obj.Bind(wx.EVT_LEFT_DCLICK, self.double_click)
             #self.text_input()
             #self.keycode.Destroy()
             #event.Skip()
-
+             
     #def text_input(self):
     #    print("TAB")
     #    self.texttabbox = wx.TextCtrl(self.panel, -1, pos = (self.x,self.y+25),style=wx.TE_PROCESS_ENTER )
