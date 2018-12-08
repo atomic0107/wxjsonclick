@@ -77,11 +77,11 @@ class mind():
             #self.keycode.GetSkipped()
             #event.GetSkipped()
             print("tab")
-            self.texttabbox = wx.TextCtrl(self.panel, -1, pos = (self.x,self.y+25),style=wx.TE_PROCESS_ENTER )
+            self.textbox = wx.TextCtrl(self.panel, -1, pos = (self.x,self.y+25),style=wx.TE_PROCESS_ENTER )
             #self.texttabbox.Bind(wx.EVT_TEXT_ENTER, self.OnText)
-            input_text =self.texttabbox.GetValue()
-            self.texttabbox.Destroy()
-            print(input_text)
+            #input_text =self.textbox.GetValue()
+            #self.textbox.Destroy()
+            self.textbox.Bind(wx.EVT_TEXT_ENTER, self.OnTabText)
             #text_obj = wx.StaticText(self.panel, wx.ID_ANY, input_text, pos = (self.x,self.y+25))
             #text_obj.SetForegroundColour(tclr)
             #text_obj.Bind(wx.EVT_LEFT_DOWN, self.click)
@@ -89,11 +89,17 @@ class mind():
             #self.text_input()
             #self.keycode.Destroy()
             #event.Skip()
-             
-    #def text_input(self):
-    #    print("TAB")
-    #    self.texttabbox = wx.TextCtrl(self.panel, -1, pos = (self.x,self.y+25),style=wx.TE_PROCESS_ENTER )
-    #    self.texttabbox.Bind(wx.EVT_TEXT_ENTER, self.OnText)
+    def OnTabText(self, event):
+        #self.Fit()
+        input_text =self.textbox.GetValue()
+        self.textbox.Destroy()
+        #self.textbox.Close(force=True)
+        #self.textbox.Clear()
+        print(input_text)
+        text_obj = wx.StaticText(self.panel, wx.ID_ANY, input_text,pos = (self.x,self.y+25))
+        text_obj.SetForegroundColour(tclr)
+        text_obj.Bind(wx.EVT_LEFT_DOWN, self.click)
+        text_obj.Bind(wx.EVT_LEFT_DCLICK, self.double_click)  
 
     def click(self, event):
         #self.textbox.Destroy()
