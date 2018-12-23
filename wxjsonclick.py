@@ -32,80 +32,79 @@ dict = {
     }
 
 ret_text = "None"
+TEXTBOX_CNT = 0
+TEXTBOX_ENABLE = 1
+TEXTBOX_DISABLE = 0
 
 class mind():
-
     #コンストラクタ
     def __init__(self,panel,text):
         self.x = center_x
-        #self.y = center_y
+        self.y = center_y
+        self.textobj_list = []
+        self.textbox_list = []
+        self.textbox_cnt = 0
         self.panel = panel
         self.panel.Bind(wx.EVT_LEFT_DOWN, self.click_panel)
         print(dict)
         dict_list = list(dict.keys())
         dict_len = len(dict_list)
-        for i in range(dict_len):
-            self.y =center_y+i*25
-            text_obj = wx.StaticText(self.panel, wx.ID_ANY, dict_list[i],pos = (self.x,self.y))
-            text_obj.SetForegroundColour(tclr)
-            text_obj.Bind(wx.EVT_LEFT_DOWN, self.click)
-            text_obj.Bind(wx.EVT_LEFT_DCLICK, self.double_click)
-        #layout.Add(text_obj, proportion=0, flag=wx.TOP,  border=10)
-
+        for text_cnt in range(dict_len):
+            self.y = center_y + text_cnt * 25
+            self.textobj = wx.StaticText(self.panel, wx.ID_ANY, dict_list[text_cnt],pos = (self.x,self.y))
+            self.textobj.SetForegroundColour(tclr)
+            self.textobj.Bind(wx.EVT_LEFT_DOWN, self.click)
+            self.textobj.Bind(wx.EVT_LEFT_DCLICK, self.double_click)
+            self.textobj_list.append(self.textobj)
+        print(" self.textbox_cnt = " + str(self.textbox_cnt))
+        print(" len(self.textbox_list) = " + str(len(self.textbox_list)))
 
     def click_panel(self,event):
-        self.textbox.Destroy()
+        print(len(self.textbox_list))
+        if self.textbox_cnt > TEXTBOX_DISABLE :
+            print(self.textbox_cnt)
+            self.textbox_list[self.textbox_cnt-1].Destroy()
+            del self.textbox_list[self.textbox_cnt-1]
+            print("#textbox_delete")
+            self.textbox_cnt -= 1
         #self.panel.Bind(wx.EVT_CHAR_HOOK, self.key_event)
-        #self.panel.Bind(wx.EVT_KEY_DOWN, self.key_event)
-        self.panel.Bind(wx.EVT_CHAR, self.key_event)
+        self.panel.Bind(wx.EVT_KEY_DOWN, self.key_event)
+        #self.panel.Bind(wx.EVT_CHAR, self.key_event)
+        print(" self.textbox_cnt = " + str(self.textbox_cnt))
+        print(" len(self.textbox_list) = " + str(len(self.textbox_list)))
 
     def key_event(self,event):
-        #self.keycode = event.GetUnicodeKey()
         self.keycode = event.GetKeyCode()
-        #print(keycode)
-        # It's a special key, deal with all the known ones:
-        #self.keycode.Destroy()
-        #self.keycode.GetSkipped()
-        #event.GetSkipped()
-        #self.text_input()
         print("press key")
         print(self.keycode)
-        event.GetSkipped()
+        #event.GetSkipped()
         if self.keycode == wx.WXK_TAB:
-            # give help ...
-            #event.Skip()
-            #self.keycode.GetSkipped()
-            #event.GetSkipped()
             print("tab")
-            self.textbox = wx.TextCtrl(self.panel, -1, pos = (self.x,self.y+25),style=wx.TE_PROCESS_ENTER )
-            #self.texttabbox.Bind(wx.EVT_TEXT_ENTER, self.OnText)
-            #input_text =self.textbox.GetValue()
-            #self.textbox.Destroy()
+            self.y += 25
+            self.textbox = wx.TextCtrl(self.panel, -1, pos = (self.x,self.y),style=wx.TE_PROCESS_ENTER )
             self.textbox.Bind(wx.EVT_TEXT_ENTER, self.OnTabText)
-            #text_obj = wx.StaticText(self.panel, wx.ID_ANY, input_text, pos = (self.x,self.y+25))
-            #text_obj.SetForegroundColour(tclr)
-            #text_obj.Bind(wx.EVT_LEFT_DOWN, self.click)
-            #text_obj.Bind(wx.EVT_LEFT_DCLICK, self.double_click)
-            #self.text_input()
-            #self.keycode.Destroy()
-            #event.Skip()
+            self.textbox_list.append(self.textbox)
+            self.textbox_cnt += 1
+        print(" self.textbox_cnt = " + str(self.textbox_cnt))
+        print(" len(self.textbox_list) = " + str(len(self.textbox_list)))
+
     def OnTabText(self, event):
-        #self.Fit()
-        input_text =self.textbox.GetValue()
-        self.textbox.Destroy()
-        #self.textbox.Close(force=True)
-        #self.textbox.Clear()
+        input_text = self.textbox.GetValue()
         print(input_text)
-        text_obj = wx.StaticText(self.panel, wx.ID_ANY, input_text,pos = (self.x,self.y+25))
-        text_obj.SetForegroundColour(tclr)
-        text_obj.Bind(wx.EVT_LEFT_DOWN, self.click)
-        text_obj.Bind(wx.EVT_LEFT_DCLICK, self.double_click)  
+        textobj = wx.StaticText(self.panel, wx.ID_ANY, input_text,pos = (self.x,self.y))
+        textobj.SetForegroundColour(tclr)
+        textobj.Bind(wx.EVT_LEFT_DOWN, self.click)
+        textobj.Bind(wx.EVT_LEFT_DCLICK, self.double_click)
 
     def click(self, event):
-        #self.textbox.Destroy()
+        if self.textbox_cnt > TEXTBOX_DISABLE :
+            print(self.textbox_cnt)
+            self.textbox_list[self.textbox_cnt-1].Destroy()
+            del self.textbox_list[self.textbox_cnt-1]
+            print("#textbox_delete")
+            self.textbox_cnt -= 1
         click = event.GetEventObject()  # クリックされたのはどのオブジェクトか
         click_text = click.GetLabel()  # そのオブジェクトのラベルを取得
-        #self.result_text.SetLabel(click_text)  # 結果表示欄にクリックされたテキストを貼り付け
         ret_text = click_text
         print(ret_text)
 
@@ -115,18 +114,26 @@ class mind():
         ret_text = click_text
         print(ret_text)
         self.textbox = wx.TextCtrl(self.panel, -1, click_text, pos = self.click.GetPosition(),style=wx.TE_PROCESS_ENTER )
-        #self.textbox.Bind(wx.EVT_TEXT, self.OnText)
         self.textbox.Bind(wx.EVT_TEXT_ENTER, self.OnText)
-        #self.Fit()
+        self.textbox_list.append(self.textbox)
+        self.textbox_cnt += 1
+        print(" self.textbox_cnt = " + str(self.textbox_cnt))
+        print(" len(self.textbox_list) = " + str(len(self.textbox_list)))
 
     def OnText(self, event):
-        #self.Fit()
         input_text =self.textbox.GetValue()
-        self.textbox.Destroy()
-        #self.textbox.Close(force=True)
-        #self.textbox.Clear()
+        if self.textbox_cnt > TEXTBOX_DISABLE:
+            print(self.textbox_cnt)
+            self.textbox_list[self.textbox_cnt-1].Destroy()
+            del self.textbox_list[self.textbox_cnt-1]
+            print("#textbox_delete")
+            self.textbox_cnt -= 1
         print(input_text)
         self.click.SetLabel(input_text)
+        
+    def del_txtbox(self):
+        print(" self.textbox_cnt = " + str(self.textbox_cnt))
+        print(" len(self.textbox_list) = " + str(len(self.textbox_list)))
 
 #class Main(wx.Frame):
 class Main():
@@ -157,7 +164,7 @@ class Main():
     def click(self, event):
         click = event.GetEventObject()  # クリックされたのはどのオブジェクトか
         click_text = click.GetLabel()  # そのオブジェクトのラベルを取得
-        self.result_text.SetLabel(ret_text)  # 結果表示欄にクリックされたテキストを貼り付け
+        #self.result_text.SetLabel(ret_text)  # 結果表示欄にクリックされたテキストを貼り付け
         #self.frame.Show(True)
 
 def main():
