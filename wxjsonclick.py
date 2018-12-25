@@ -47,11 +47,11 @@ class mind():
         self.panel = panel
         self.panel.Bind(wx.EVT_LEFT_DOWN, self.click_panel)
         print(dict)
-        dict_list = list(dict.keys())
-        dict_len = len(dict_list)
+        self.dict_list = list(dict.keys())
+        dict_len = len(self.dict_list)
         for text_cnt in range(dict_len):
             self.y = center_y + text_cnt * 25
-            self.textobj = wx.StaticText(self.panel, wx.ID_ANY, dict_list[text_cnt],pos = (self.x,self.y))
+            self.textobj = wx.StaticText(self.panel, wx.ID_ANY, self.dict_list[text_cnt],pos = (self.x,self.y))
             self.textobj.SetForegroundColour(tclr)
             self.textobj.Bind(wx.EVT_LEFT_DOWN, self.click)
             self.textobj.Bind(wx.EVT_LEFT_DCLICK, self.double_click)
@@ -67,8 +67,8 @@ class mind():
             del self.textbox_list[self.textbox_cnt-1]
             print("#textbox_delete")
             self.textbox_cnt -= 1
-        #self.panel.Bind(wx.EVT_CHAR_HOOK, self.key_event)
-        self.panel.Bind(wx.EVT_KEY_DOWN, self.key_event)
+        #self.panel.Bind(wx.EVT_CHAR_HOOK, self.key_event)#MAC NG
+        self.panel.Bind(wx.EVT_KEY_DOWN, self.key_event)#MAC OK
         #self.panel.Bind(wx.EVT_CHAR, self.key_event)
         print(" self.textbox_cnt = " + str(self.textbox_cnt))
         print(" len(self.textbox_list) = " + str(len(self.textbox_list)))
@@ -91,10 +91,12 @@ class mind():
     def OnTabText(self, event):
         input_text = self.textbox.GetValue()
         print(input_text)
+        #if int(dict.setdefault(input_text,None)) > len(self.dict_list)):
         textobj = wx.StaticText(self.panel, wx.ID_ANY, input_text,pos = (self.x,self.y))
         textobj.SetForegroundColour(tclr)
         textobj.Bind(wx.EVT_LEFT_DOWN, self.click)
         textobj.Bind(wx.EVT_LEFT_DCLICK, self.double_click)
+        print(dict)
 
     def click(self, event):
         if self.textbox_cnt > TEXTBOX_DISABLE :
@@ -130,7 +132,7 @@ class mind():
             self.textbox_cnt -= 1
         print(input_text)
         self.click.SetLabel(input_text)
-        
+
     def del_txtbox(self):
         print(" self.textbox_cnt = " + str(self.textbox_cnt))
         print(" len(self.textbox_list) = " + str(len(self.textbox_list)))
