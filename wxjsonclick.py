@@ -89,15 +89,42 @@ class mind():
         print(" len(self.textbox_list) = " + str(len(self.textbox_list)))
 
     def OnTabText(self, event):
-        input_text = self.textbox.GetValue()
+        self.box = event.GetEventObject()
+        input_text = self.box.GetValue()
+        self.box.Destroy()
+        self.textbox_cnt -= 1
         print(input_text)
         #if int(dict.setdefault(input_text,None)) > len(self.dict_list)):
         textobj = wx.StaticText(self.panel, wx.ID_ANY, input_text,pos = (self.x,self.y))
         textobj.SetForegroundColour(tclr)
-        textobj.Bind(wx.EVT_LEFT_DOWN, self.click)
-        textobj.Bind(wx.EVT_LEFT_DCLICK, self.double_click)
+        textobj.Bind(wx.EVT_LEFT_DOWN, self.tabclick)
+        textobj.Bind(wx.EVT_LEFT_DCLICK, self.tabdouble_click)
         print(dict)
+        
+    def tabclick(self, event):
+        if self.textbox_cnt > TEXTBOX_DISABLE :
+            print(self.textbox_cnt)
+            self.textbox_list[self.textbox_cnt-1].Destroy()
+            del self.textbox_list[self.textbox_cnt-1]
+            print("#textbox_delete")
+            self.textbox_cnt -= 1
+        click = event.GetEventObject()  # クリックされたのはどのオブジェクトか
+        click_text = click.GetLabel()  # そのオブジェクトのラベルを取得
+        ret_text = click_text
+        print(ret_text)
 
+    def tabdouble_click(self, event):
+        self.click = event.GetEventObject()  # クリックされたのはどのオブジェクトか
+        click_text = self.click.GetLabel()  # そのオブジェクトのラベルを取得
+        ret_text = click_text
+        print(ret_text)
+        self.textbox = wx.TextCtrl(self.panel, -1, click_text, pos = self.click.GetPosition(),style=wx.TE_PROCESS_ENTER )
+        self.textbox.Bind(wx.EVT_TEXT_ENTER, self.OnText)
+        self.textbox_list.append(self.textbox)
+        self.textbox_cnt += 1
+        print(" self.textbox_cnt = " + str(self.textbox_cnt))
+        print(" len(self.textbox_list) = " + str(len(self.textbox_list)))
+        
     def click(self, event):
         if self.textbox_cnt > TEXTBOX_DISABLE :
             print(self.textbox_cnt)
@@ -123,6 +150,7 @@ class mind():
         print(" len(self.textbox_list) = " + str(len(self.textbox_list)))
 
     def OnText(self, event):
+        self.ontextobj = event.GetEventObject()  # クリックされたのはどのオブジェクトか
         input_text =self.textbox.GetValue()
         if self.textbox_cnt > TEXTBOX_DISABLE:
             print(self.textbox_cnt)
