@@ -10,7 +10,7 @@ https://wxpython.org/Phoenix/docs/html/wx.KeyEvent.html
 https://www.blog.pythonlibrary.org/2009/08/29/wxpython-catching-key-and-char-events/
 @author: atomic
 '''
-
+import json
 import wx
 ##############################################
 #            global variable
@@ -23,14 +23,22 @@ center_y = bd_height/2
 clr = "black"       #背景の色
 tclr = 'green'       #テキストの色
 prime_cnt = 50
+f = open('data.json', 'r')
+#f = open('data_w.json', 'w')
+jsonData = json.load(f)
+f.close
+print (json.dumps(jsonData, sort_keys = True, indent = 4))
+#dict = json.load(json_t)
+
+#"""
 dict = {
     "mind":None,
     "net":None,
     "IT":None,
     "swk":None,
     "tom":None
-    }
-
+}
+#"""
 ret_text = "None"
 TEXTBOX_CNT = 0
 TEXTBOX_ENABLE = 1
@@ -53,11 +61,17 @@ class mind():
             self.y = center_y + text_cnt * 25
             self.textobj = wx.StaticText(self.panel, wx.ID_ANY, self.dict_list[text_cnt],pos = (self.x,self.y))
             self.textobj.SetForegroundColour(tclr)
-            self.textobj.Bind(wx.EVT_LEFT_DOWN, self.click)
-            self.textobj.Bind(wx.EVT_LEFT_DCLICK, self.double_click)
+            #self.textobj.Bind(wx.EVT_LEFT_DOWN, self.click)
+            #self.textobj.Bind(wx.EVT_LEFT_DCLICK, self.double_click)
+            self.textobj.Bind(wx.EVT_LEFT_DOWN, self.double_click)
             self.textobj_list.append(self.textobj)
         print(" self.textbox_cnt = " + str(self.textbox_cnt))
         print(" len(self.textbox_list) = " + str(len(self.textbox_list)))
+        
+    def write_dict(self,dict_data):
+        f = open('data_w.json', 'w')
+        json.dump(dict_data, f , sort_keys = True, indent = 4)
+        f.close
 
     def click_panel(self,event):
         print(len(self.textbox_list))
@@ -81,7 +95,7 @@ class mind():
         if self.keycode == wx.WXK_TAB:
             print("tab")
             self.y += 25
-            self.textbox = wx.TextCtrl(self.panel, -1, pos = (self.x,self.y),style=wx.TE_PROCESS_ENTER )
+            self.textbox = wx.TextCtrl(self.panel, -1, pos = (self.x,self.y),style = wx.TE_PROCESS_ENTER )
             self.textbox.Bind(wx.EVT_TEXT_ENTER, self.OnTabText)
             self.textbox_list.append(self.textbox)
             self.textbox_cnt += 1
@@ -99,8 +113,10 @@ class mind():
         textobj.SetForegroundColour(tclr)
         textobj.Bind(wx.EVT_LEFT_DOWN, self.tabclick)
         textobj.Bind(wx.EVT_LEFT_DCLICK, self.tabdouble_click)
+        dict.setdefault( input_text , None )
+        self.write_dict(dict)
         print(dict)
-        
+
     def tabclick(self, event):
         if self.textbox_cnt > TEXTBOX_DISABLE :
             print(self.textbox_cnt)
@@ -118,13 +134,14 @@ class mind():
         click_text = self.click.GetLabel()  # そのオブジェクトのラベルを取得
         ret_text = click_text
         print(ret_text)
-        self.textbox = wx.TextCtrl(self.panel, -1, click_text, pos = self.click.GetPosition(),style=wx.TE_PROCESS_ENTER )
+        #self.textbox = wx.TextCtrl(self.panel, -1, click_text, pos = self.click.GetPosition(),style = wx.TE_PROCESS_ENTER )
+        self.textbox = wx.TextCtrl(self.panel, -1, click_text, pos = self.click.GetPosition(),style = wx.TE_LEFT )
         self.textbox.Bind(wx.EVT_TEXT_ENTER, self.OnText)
         self.textbox_list.append(self.textbox)
         self.textbox_cnt += 1
         print(" self.textbox_cnt = " + str(self.textbox_cnt))
         print(" len(self.textbox_list) = " + str(len(self.textbox_list)))
-        
+
     def click(self, event):
         if self.textbox_cnt > TEXTBOX_DISABLE :
             print(self.textbox_cnt)
@@ -142,8 +159,12 @@ class mind():
         click_text = self.click.GetLabel()  # そのオブジェクトのラベルを取得
         ret_text = click_text
         print(ret_text)
-        self.textbox = wx.TextCtrl(self.panel, -1, click_text, pos = self.click.GetPosition(),style=wx.TE_PROCESS_ENTER )
+        self.textbox = wx.TextCtrl(self.panel, -1, click_text, pos = self.click.GetPosition(),style = wx.TE_PROCESS_ENTER )
+        self.textbox.SelectAll()
+        print(self.textbox.GetSelection())
+        #self.textbox = wx.TextCtrl(self.panel, -1, click_text, pos = self.click.GetPosition(),style = wx.TE_MULTILINE )
         self.textbox.Bind(wx.EVT_TEXT_ENTER, self.OnText)
+        #self.textbox.SelectAll()
         self.textbox_list.append(self.textbox)
         self.textbox_cnt += 1
         print(" self.textbox_cnt = " + str(self.textbox_cnt))
@@ -151,7 +172,9 @@ class mind():
 
     def OnText(self, event):
         self.ontextobj = event.GetEventObject()  # クリックされたのはどのオブジェクトか
+        #self.textbox.SelectAll()
         input_text =self.textbox.GetValue()
+        #self.textbox.SetValue(input_text)
         if self.textbox_cnt > TEXTBOX_DISABLE:
             print(self.textbox_cnt)
             self.textbox_list[self.textbox_cnt-1].Destroy()
@@ -159,7 +182,7 @@ class mind():
             print("#textbox_delete")
             self.textbox_cnt -= 1
         print(input_text)
-        self.click.SetLabel(input_text)
+        #self.click.SetLabel(input_text)
 
     def del_txtbox(self):
         print(" self.textbox_cnt = " + str(self.textbox_cnt))
