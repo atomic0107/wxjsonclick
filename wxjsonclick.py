@@ -21,7 +21,7 @@ bd_height = 500    #フレームの縦幅
 center_x = bd_width/2
 center_y = bd_height/2
 clr = "black"       #背景の色
-tclr = 'green'       #テキストの色
+tclr = 'black'       #テキストの色
 prime_cnt = 50
 f = open('data.json', 'r')
 #f = open('data_w.json', 'w')
@@ -32,11 +32,11 @@ print (json.dumps(jsonData, sort_keys = True, indent = 4))
 
 #"""
 dict = {
-    "mind":None,
-    "net":None,
-    "IT":None,
-    "swk":None,
-    "tom":None
+    "関数":None,
+    "定義":None,
+    "構造体":None,
+    "列挙隊":None,
+    "テーブル":None
 }
 #"""
 ret_text = "None"
@@ -46,6 +46,11 @@ TEXTBOX_DISABLE = 0
 
 class mind():
     #コンストラクタ
+    cur_len = 0
+    cur_x = center_x
+    cur_y = center_y
+    tab_flag = False
+    #constractor
     def __init__(self,panel,text):
         self.x = center_x
         self.y = center_y
@@ -56,8 +61,8 @@ class mind():
         self.panel.Bind(wx.EVT_LEFT_DOWN, self.click_panel)
         print(dict)
         self.dict_list = list(dict.keys())
-        dict_len = len(self.dict_list)
-        for text_cnt in range(dict_len):
+        mind.cur_len = len(self.dict_list)
+        for text_cnt in range(mind.cur_len):
             self.y = center_y + text_cnt * 25
             self.textobj = wx.StaticText(self.panel, wx.ID_ANY, self.dict_list[text_cnt],pos = (self.x,self.y))
             self.textobj.SetForegroundColour(tclr)
@@ -67,7 +72,7 @@ class mind():
             self.textobj_list.append(self.textobj)
         print(" self.textbox_cnt = " + str(self.textbox_cnt))
         print(" len(self.textbox_list) = " + str(len(self.textbox_list)))
-        
+
     def write_dict(self,dict_data):
         f = open('data_w.json', 'w')
         json.dump(dict_data, f , sort_keys = True, indent = 4)
@@ -197,7 +202,7 @@ class Main():
         frame = wx.Frame(None,title="mindnet")#ウィンドウ作成クラス
         frame.SetClientSize(bd_width,bd_height)
         panel = wx.Panel(frame)
-        panel.SetBackgroundColour(clr)#set color of background
+        #panel.SetBackgroundColour(clr)#set color of background
 
         self.result_text = wx.StaticText(panel, wx.ID_ANY, "click text name ...")
         self.result_text.SetForegroundColour(tclr)
