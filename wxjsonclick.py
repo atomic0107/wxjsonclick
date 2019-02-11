@@ -52,6 +52,7 @@ class mind():
     cur_y = center_y
     tab_flag = False
     del_editbox = None#delete editbox
+    callSkip = None
     #constractor
     def __init__(self,panel):
         self.textobj_list = []
@@ -101,7 +102,7 @@ class mind():
         print(dict)
 
     def tabclick(self, event):
-        if self.textbox_cnt > TEXTBOX_DISABLE :
+        if self.textbox_cnt > TEXTBOX_DISABLE:
             print(self.textbox_cnt)
             self.textbox_list[self.textbox_cnt-1].Destroy()
             del self.textbox_list[self.textbox_cnt-1]
@@ -144,9 +145,9 @@ class mind():
         print(ret_text)
         self.textbox = wx.TextCtrl(mind.panel, -1, click_text, pos = self.click.GetPosition(),style = wx.TE_PROCESS_ENTER )
         self.textbox.SelectAll()
+        self.textbox.SetFocus()
         print(self.textbox.GetSelection())
         self.textbox.Bind(wx.EVT_TEXT_ENTER, self.OnText)
-        #self.textbox.SelectAll()
         self.textbox_list.append(self.textbox)
         self.textbox_cnt += 1
         print(" self.textbox_cnt = " + str(self.textbox_cnt))
@@ -174,11 +175,9 @@ class mind():
     def entry_label(cls):
         cls.cur_y = center_y + cls.cur_len * 25
         cls.tab_flag = 0
-        editbox = wx.TextCtrl(cls.panel, -1, pos = (cls.cur_x,cls.cur_y),style = wx.TE_PROCESS_ENTER )
+        editbox = wx.TextCtrl(mind.panel, -1, pos = (cls.cur_x,cls.cur_y),style = wx.TE_PROCESS_ENTER )
         editbox.SetFocus()
-        #editbox.bind( '<Return>', mind.write_label )#enter key
         cls.del_editbox = editbox
-        #editbox.SelectAll()
         cls.tab_flag = True#set tab pressed
         editbox.Bind(wx.EVT_TEXT_ENTER, cls.write_label )
 
@@ -190,10 +189,12 @@ class mind():
         write_flag = dict.setdefault(input_text,None)
         print(dict.setdefault(input_text,None))
         if write_flag == None:
-            Static = wx.StaticText(mind.panel, wx.ID_ANY, input_text, pos = (cls.cur_x,cls.cur_y))
+            Static = wx.StaticText(cls.panel, -1, input_text, pos = (cls.cur_x,cls.cur_y))
             Static.SetForegroundColour(tclr)
             cls.tab_flag = False#set tab unpressed
             cls.cur_len += 1#inclease text objct
+        else:
+            print("dict is not available")
         print(dict)
 
     @classmethod
@@ -215,14 +216,15 @@ class Main():
         #wx.Frame.__init__(self, parent, id, title)
         frame = wx.Frame(None,title="mindnet")
         frame.SetClientSize(bd_width,bd_height)
-        panel = wx.Panel(frame)
-        panel.Bind(wx.EVT_LEFT_DOWN, self.click_ev)
-        mind(panel)
+        #panel = wx.Panel(frame)
+        frame.Bind(wx.EVT_LEFT_DOWN, self.click_ev)
+        mind(frame)
         frame.Show(True)
 
     def click_ev(self,event):
         panel = event.GetEventObject()
-        panel.Bind(wx.EVT_KEY_DOWN, self.key_event)#MAC OK
+        panel.Bind(wx.EVT_CHAR_HOOK, self.key_event)#WIN OK
+        #panel.Bind(wx.EVT_KEY_DOWN, self.key_event)#MAC OK
         if mind.tab_flag == True:
             print("delete editbox")
             mind.del_editbox.Destroy()
@@ -232,6 +234,9 @@ class Main():
 
     def key_event(self,event):
         self.keycode = event.GetKeyCode()
+        
+        # 後続のキーイベントをスキップする
+        mind.callSkip = True
 
         if self.keycode == wx.WXK_TAB:
             print("press TAB")
@@ -241,7 +246,7 @@ class Main():
             else:
                 print("cant create editbox")
 
-        if self.keycode == wx.WXK_ESCAPE:
+        elif self.keycode == wx.WXK_ESCAPE:
             print("press ESC")
             if mind.tab_flag == True:
                 print("delete editbox")
@@ -249,6 +254,10 @@ class Main():
                 mind.tab_flag = False#set tab unpressed
             else:
                 print("no editbox")
+        else:
+            print("other key down")
+            event.Skip()
+            
 
 def main():
     app = wx.App()
