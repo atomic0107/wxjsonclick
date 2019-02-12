@@ -71,7 +71,7 @@ class mind():
             mind.cur_y =  center_y + mind.r * math.sin(mind.th)
             #mind.dc = wx.BufferedPaintDC(panel)
             mind.panel.Bind(wx.EVT_PAINT,self.draw)
-            mind.th += PI/10
+            mind.th += PI/9
             self.textobj = wx.StaticText(mind.panel, wx.ID_ANY, self.dict_list[text_cnt],pos = (mind.cur_x,mind.cur_y))
             self.textobj.SetForegroundColour(tclr)
             self.textobj.Bind(wx.EVT_LEFT_DCLICK, self.double_click)
