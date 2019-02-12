@@ -1,7 +1,20 @@
 {
-	"udagawa tomohiro"	:	null,
-	"net"	:	null,
-	"IT"	:	null,
-	"swk"	:	null,
-	"tom"	:	null
+    "define"	:	null,
+    "struct"	:	null,
+    "enum"	:	null,
+    "for"	:	null,
+    "while"	:	null,
+    "do"	:	null,
+    "if"	:	null,
+    "else if"	:	null,
+    "else"	:	null,
+    "if"	:	null,
+    "elif"	:	null,
+    "typedef"	:	null,
+    "const"	:	null,
+    "int"	:	null,
+    "double"	:	null,
+    "float"	:	null,
+    "char"	:	null,
+    "bool"	:	null
 }

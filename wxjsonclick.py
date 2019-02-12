@@ -1,3 +1,4 @@
+# coding: UTF-8
 '''
 Created on 2018/08/11
 refer to URL
@@ -10,13 +11,16 @@ https://wxpython.org/Phoenix/docs/html/wx.KeyEvent.html
 https://www.blog.pythonlibrary.org/2009/08/29/wxpython-catching-key-and-char-events/
 text events
 http://wxwindowsjp.osdn.jp/docs/html/wx/wx381.htm
+https://maku77.github.io/python/wxpython/graphics.html
 @author: atomic
 '''
+import math
 import json
 import wx
 ##############################################
 #            global variable
 ##############################################
+PI = math.pi
 rec_side = 50       #四角の辺の大きさ
 bd_width = 500     #フレームの横幅
 bd_height = 500    #フレームの縦幅
@@ -25,20 +29,12 @@ center_y = bd_height/2
 clr = "black"       #背景の色
 tclr = 'black'       #テキストの色
 prime_cnt = 50
-f = open('data.json', 'r')
+f = open('data.json', 'r', encoding='utf-8')
 #f = open('data_w.json', 'w')
 jsonData = json.load(f)
 f.close
 print (json.dumps(jsonData, sort_keys = True, indent = 4))
-#dict = json.load(json_t)
-#"""
-dict = {
-    "関数":None,
-    "定義":None,
-    "構造体":None,
-    "列挙隊":None,
-    "テーブル":None
-}
+dict = jsonData
 #"""
 ret_text = "None"
 TEXTBOX_CNT = 0
@@ -46,13 +42,20 @@ TEXTBOX_ENABLE = 1
 TEXTBOX_DISABLE = 0
 
 class mind():
-    #コンストラクタ
+    #constractor
+    th = -PI/4   #θ
+    r = 100      #radius
+    cur_x = center_x + r * math.cos(th)
+    #cur_x = r * math.cos(th)
+    cur_y = center_y + r * math.sin(th)
+    #cur_y = r * math.sin(th)
     cur_len = 0
-    cur_x = center_x
-    cur_y = center_y
+    #cur_x = center_x
+    #cur_y = center_y
     tab_flag = False
     del_editbox = None#delete editbox
     callSkip = None
+    dc = None
     #constractor
     def __init__(self,panel):
         self.textobj_list = []
@@ -64,12 +67,24 @@ class mind():
         mind.panel = panel
         mind.cur_len = len(self.dict_list)
         for text_cnt in range(mind.cur_len):
-            mind.cur_y = center_y + text_cnt * 25
+            mind.cur_x =  center_x + mind.r * math.cos(mind.th)
+            mind.cur_y =  center_y + mind.r * math.sin(mind.th)
+            #mind.dc = wx.BufferedPaintDC(panel)
+            mind.panel.Bind(wx.EVT_PAINT,self.draw)
+            mind.th += PI/10
             self.textobj = wx.StaticText(mind.panel, wx.ID_ANY, self.dict_list[text_cnt],pos = (mind.cur_x,mind.cur_y))
             self.textobj.SetForegroundColour(tclr)
-            #self.textobj.Bind(wx.EVT_LEFT_DOWN, self.click)
             self.textobj.Bind(wx.EVT_LEFT_DCLICK, self.double_click)
             self.textobj_list.append(self.textobj)
+
+    def draw(self,event):
+        print("draw")
+        #panel = event.GetEventObject()
+        mind.dc = wx.PaintDC(mind.panel)#set bitmap case
+        #mind.dc = wx.BufferedPaintDC(mind.panel)#set bitmap case
+        #mind.dc = wx.BufferedDC(mind.panel)#set bitmap case
+        mind.dc.SetPen(wx.Pen('black'))
+        mind.dc.DrawLine(center_x, center_y, mind.cur_x, mind.cur_y)
 
     def key_event(self,event):
         self.keycode = event.GetKeyCode()
@@ -216,9 +231,9 @@ class Main():
         #wx.Frame.__init__(self, parent, id, title)
         frame = wx.Frame(None,title="mindnet")
         frame.SetClientSize(bd_width,bd_height)
-        #panel = wx.Panel(frame)
         frame.Bind(wx.EVT_LEFT_DOWN, self.click_ev)
-        mind(frame)
+        panel = wx.Panel(frame)
+        mind(panel)
         frame.Show(True)
 
     def click_ev(self,event):
@@ -234,7 +249,7 @@ class Main():
 
     def key_event(self,event):
         self.keycode = event.GetKeyCode()
-        
+
         # 後続のキーイベントをスキップする
         mind.callSkip = True
 
@@ -257,7 +272,7 @@ class Main():
         else:
             print("other key down")
             event.Skip()
-            
+
 
 def main():
     app = wx.App()
