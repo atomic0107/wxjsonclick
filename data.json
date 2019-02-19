@@ -6,15 +6,16 @@
     "while"	:	null,
     "do"	:	null,
     "if"	:	null,
-    "else if"	:	null,
     "else"	:	null,
     "if"	:	null,
-    "elif"	:	null,
     "typedef"	:	null,
     "const"	:	null,
     "int"	:	null,
+    "unsigned"	:	null,
     "double"	:	null,
     "float"	:	null,
     "char"	:	null,
-    "bool"	:	null
+    "bool"	:	null,
+    "inline"	:	null,
+    "volatile"	:	null
 }
